@@ -1,0 +1,26 @@
+{
+  "manifest_version": 2,
+  "name": "File Blocker",
+  "version": "1.0",
+  "description": "Blocks specific file extensions on web pages.",
+  "permissions": ["webRequest", "webRequestBlocking", "http://*/*", "https://*/*"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}
+const blockedExtension = ".exe"; // Change this to the extension you want to block
+
+chrome.webRequest.onBeforeRequest.addListener(
+  function(details) {
+    const url = details.url.toLowerCase();
+    if (url.includes(blockedExtension)) {
+      console.log("[File Blocker] Blocked request to:", url);
+      return { cancel: true };
+    }
+  },
+  { urls: ["<all_urls>"] },
+  ["blocking"]
+);
